@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CU-Emotion AI — แบบประเมินอารมณ์</title>
+    <meta name="description" content="แบบทดสอบวิเคราะห์อารมณ์โดย CU-Emotion AI จากจุฬาลงกรณ์มหาวิทยาลัย">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ════════════════════════════════════════════════
+       PAGE 1 — LANDING  (ใส่ชื่อ)
+  ════════════════════════════════════════════════ -->
+    <div id="page-landing" class="page active">
+        <!-- Chula header -->
+        <div class="cu-header">
+            <div class="cu-logo">🏛️</div>
+            <div class="cu-title-block">
+                <span class="cu-uni">Chulalongkorn University</span>
+                <span class="cu-dept">Faculty of Psychology — Emotion AI Lab</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <span class="card-badge">CU-Emotion AI v3.2</span>
+            <h1 class="card-title">แบบประเมินอารมณ์และบุคลิกภาพ</h1>
+            <p class="card-desc">
+                ระบบ AI วิเคราะห์อารมณ์ พัฒนาโดยศูนย์วิจัย CU-Emotion AI ร่วมกับคณะจิตวิทยา
+                จุฬาลงกรณ์มหาวิทยาลัย เพื่อค้นหาลักษณะอารมณ์พื้นฐานและศักยภาพทางจิตใจของคุณ
+            </p>
+
+            <div class="form-group">
+                <label for="name-input">ชื่อ-นามสกุล (หรือชื่อเล่น) (ภาษาอังกฤษ)</label>
+                <input id="name-input" type="text" placeholder="กรุณากรอกชื่อของคุณ..." autocomplete="off">
+            </div>
+
+            <button class="btn-primary" onclick="startSurvey()">เริ่มทำแบบประเมิน →</button>
+            <p class="form-note">🔒 ข้อมูลของคุณจะถูกเก็บเป็นความลับ ตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล</p>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+       PAGE 2 — SURVEY  (ทำแบบสอบถาม)
+  ════════════════════════════════════════════════ -->
+    <div id="page-survey" class="page">
+        <div class="cu-header">
+            <div class="cu-logo">🏛️</div>
+            <div class="cu-title-block">
+                <span class="cu-uni">CU-Emotion AI</span>
+                <span class="cu-dept">กำลังทำแบบประเมิน…</span>
+            </div>
+        </div>
+
+        <div class="survey-progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+        </div>
+
+        <div id="survey-card" class="card survey-card">
+            <div class="question-meta">
+                <span id="q-number" class="q-number"></span>
+                <span id="q-category" class="q-category"></span>
+            </div>
+            <p id="question-text" class="question-text"></p>
+            <div id="options-grid" class="options-grid"></div>
+            <button id="next-btn" class="btn-next" disabled onclick="nextQuestion()">ถัดไป →</button>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+       PAGE 2.5 — BRIDGE  (เกริ่นนำ)
+  ════════════════════════════════════════════════ -->
+    <div id="page-bridge" class="page">
+        <canvas id="bridge-canvas"></canvas>
+
+        <!-- petals layer -->
+        <div id="bridge-petals" class="petals-layer"></div>
+
+        <div class="bridge-content">
+            <div class="bridge-lines">
+
+                <!-- line 1: หัวข้อ -->
+                <div class="bridge-line" data-delay="0">
+                    <span class="bl-small">ผลการวิเคราะห์ใกล้เสร็จสิ้น</span>
+                </div>
+
+                <!-- line 2: ornament -->
+                <div class="bridge-line" data-delay="1">
+                    <div class="bl-ornament">
+                        <div class="orn-line"></div>
+                        <span class="orn-gem">✦</span>
+                        <div class="orn-line"></div>
+                    </div>
+                </div>
+
+                <!-- line 3: heading -->
+                <div class="bridge-line" data-delay="2">
+                    <span class="bl-heading">คำถามสุดท้าย</span>
+                </div>
+
+                <!-- line 4: from -->
+                <div class="bridge-line" data-delay="3.5">
+                    <span class="bl-from">จาก <span id="bridge-from-name" class="bl-name"></span></span>
+                </div>
+
+                <!-- line 5: to label -->
+                <div class="bridge-line" data-delay="5">
+                    <span class="bl-to-label">ถึง</span>
+                    <span id="bridge-to-name" class="bl-to-name"></span>
+                </div>
+
+                <!-- line 6: question -->
+                <div class="bridge-line" data-delay="7">
+                    <p class="bl-question">ฉันมีเรื่องอยากบอกเธอ…<br>เปิดดูไหม?</p>
+                </div>
+
+                <!-- line 7: CTA -->
+                <div class="bridge-line" data-delay="9">
+                    <button class="bridge-cta" onclick="proceedToPropose()">
+                        <span class="bcta-shine"></span>
+                        เปิดข้อความ 💌
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+       PAGE 3 — PROPOSE  (ขอเป็นแฟน)
+  ════════════════════════════════════════════════ -->
+    <div id="page-propose" class="page">
+        <canvas id="propose-canvas"></canvas>
+
+        <!-- petals layer -->
+        <div id="petals-layer" class="petals-layer"></div>
+
+        <div class="propose-content">
+            <!-- top ornament -->
+            <div class="propose-ornament">
+                <div class="orn-line"></div>
+                <span class="orn-gem">✦</span>
+                <div class="orn-line"></div>
+            </div>
+
+            <!-- heart ring -->
+            <div class="propose-heart-ring">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+                <span class="heart-icon">💗</span>
+            </div>
+
+            <p id="propose-eyebrow" class="propose-eyebrow"></p>
+            <h2 id="propose-title" class="propose-title"></h2>
+            <p id="propose-subtitle" class="propose-subtitle"></p>
+
+            <!-- bottom ornament -->
+            <div class="propose-ornament propose-ornament--bottom">
+                <div class="orn-line"></div>
+                <span class="orn-gem">✦</span>
+                <div class="orn-line"></div>
+            </div>
+
+            <!-- buttons -->
+            <div class="btn-propose-wrapper">
+                <button id="btn-yes" class="btn-yes" onclick="handleYes()">
+                    <span class="btn-yes-bg"></span>
+                    <span class="btn-yes-shine"></span>
+                    <span class="yes-text">ตกลง ❤️</span>
+                </button>
+                <button id="btn-no" class="btn-no" onclick="handleNo()">ไม่</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+       PAGE 4 — FINAL  (ความทรงจำ)
+  ════════════════════════════════════════════════ -->
+    <div id="page-final" class="page">
+        <canvas id="final-canvas"></canvas>
+
+        <!-- firefly layer -->
+        <div id="firefly-layer" class="firefly-layer"></div>
+
+        <!-- ── Hero section ── -->
+        <section class="final-hero">
+            <div class="hero-glow-orb hero-glow-1"></div>
+            <div class="hero-glow-orb hero-glow-2"></div>
+
+            <div class="final-hero-inner">
+                <div class="hero-rings">
+                    <div class="h-ring h-ring-1"></div>
+                    <div class="h-ring h-ring-2"></div>
+                    <div class="h-ring h-ring-3"></div>
+                    <span class="hero-heart">💛</span>
+                </div>
+
+                <p class="final-eyebrow">Together from now on</p>
+                <h1 id="final-headline" class="final-headline"></h1>
+                <p id="final-subtext" class="final-subtext"></p>
+
+                <div class="scroll-cue">
+                    <span class="scroll-cue-text">scroll down</span>
+                    <svg class="scroll-cue-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14M5 12l7 7 7-7" />
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Memory section — Apple-style ── -->
+        <section id="mem-section" class="mem-section">
+
+            <!-- intro — full viewport -->
+            <div class="apple-mem-intro">
+                <div class="apple-mem-intro-inner">
+                    <span class="apple-label">Our Memories</span>
+                    <h2 class="apple-mem-title">ความทรงจำ<br>ของเรา</h2>
+                    <p class="apple-mem-subtitle">ทุกช่วงเวลาที่ผ่านมาด้วยกัน<br>ไม่เคยคิดที่จำลืม</p>
+                </div>
+                <div class="apple-scroll-hint">
+                    <span>เลื่อนลง</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M12 5v14M5 12l7 7 7-7" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- memory items — built by JS -->
+            <div id="apple-mem-list" class="apple-mem-list"></div>
+
+        </section>
+
+        <!-- ── Closing ── -->
+        <section class="final-closing">
+            <div class="closing-glow"></div>
+            <div class="closing-heart-wrap">
+                <div class="c-ring c-ring-1"></div>
+                <div class="c-ring c-ring-2"></div>
+                <span class="closing-heart">🧡</span>
+            </div>
+            <h2 class="closing-title">ขอบคุณที่อยู่ด้วยกันมาตลอดนะ ❤️</h2>
+            <p class="closing-note">— เราจะอยู่ข้างเองไปตลอดเลยนะ —</p>
+        </section>
+
+        <!-- ── Music button ── -->
+        <button id="music-btn" class="music-btn" onclick="toggleMusic()">
+            <span class="music-ripple"></span>
+            <span class="music-icon">
+                <!-- playing icon -->
+                <svg class="icon-playing" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
+                </svg>
+                <!-- muted icon -->
+                <svg class="icon-muted" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+                    <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6zM2 9l4 4m0-4l-4 4" stroke="currentColor"
+                        stroke-width="2" />
+                </svg>
+            </span>
+            <span id="music-label" class="music-label">กำลังเล่น</span>
+        </button>
+
+        <!-- ── Background music (เพลงบรรเลง) ── -->
+        <audio id="bg-music" loop preload="auto">
+            <!-- ใส่ไฟล์เพลงบรรเลงที่นี่ -->
+            <source src="Audio/Frank Ocean - Godspeed.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- ── Our Song (เพลงของเรา — เล่นเมื่อ scroll ถึง) ── -->
+        <audio id="our-song" loop preload="auto">
+            <!-- ใส่ไฟล์เพลงของเราที่นี่ -->
+            <source src="Audio/Blackbeans - You [Official Lyric Video].mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
